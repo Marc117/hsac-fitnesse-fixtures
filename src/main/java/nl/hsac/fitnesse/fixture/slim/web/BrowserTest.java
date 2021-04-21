@@ -24,20 +24,11 @@ import nl.hsac.fitnesse.slim.interaction.ExceptionHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.text.StringEscapeUtils;
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Cookie;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.UnhandledAlertException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import io.github.sukgu.Shadow;
 
 import java.io.File;
 import java.io.IOException;
@@ -74,6 +65,8 @@ public class BrowserTest<T extends WebElement> extends SlimFixture {
             EDGE_HIDDEN_BY_OTHER_ELEMENT_ERROR = "Element is obscured";
     private static final Pattern FIREFOX_HIDDEN_BY_OTHER_ELEMENT_ERROR_PATTERN =
             Pattern.compile("Element.+is not clickable.+because another element.+obscures it");
+    private Shadow shadow = new Shadow(driver());
+    private boolean shadowDomHandling = true;
 
     protected List<String> getCurrentSearchContextPath() {
         return currentSearchContextPath;
@@ -987,6 +980,13 @@ public class BrowserTest<T extends WebElement> extends SlimFixture {
     }
 
     protected T getElementToClick(String place) {
+        if (getSeleniumHelper().getElementToClick(place) == null && isShadowDomHandling() ){
+            try{
+                return (T) shadow.findElement(place);
+            } catch (ElementNotVisibleException e){
+                return null;
+            }
+        }
         return getSeleniumHelper().getElementToClick(place);
     }
 
@@ -2730,6 +2730,14 @@ public class BrowserTest<T extends WebElement> extends SlimFixture {
 
     public void setNgBrowserTest(NgBrowserTest ngBrowserTest) {
         this.ngBrowserTest = ngBrowserTest;
+    }
+
+    public boolean isShadowDomHandling(){
+        return shadowDomHandling;
+    }
+
+    public void setShadowDomHandlingTo(boolean shadowDomHandling){
+        this.shadowDomHandling = shadowDomHandling;
     }
 
     public boolean isImplicitWaitForAngularEnabled() {
