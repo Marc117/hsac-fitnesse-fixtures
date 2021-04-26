@@ -24,7 +24,18 @@ import nl.hsac.fitnesse.slim.interaction.ExceptionHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.text.StringEscapeUtils;
-import org.openqa.selenium.*;
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Cookie;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.ElementNotVisibleException;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.UnhandledAlertException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -32,6 +43,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -218,6 +231,15 @@ public class BrowserTest<T extends WebElement> extends SlimFixture {
         secondsBeforeTimeout(secondsBeforeTimeout);
         if (!ensureActiveTabIsNotClosed() && confirmAlertIfAvailable) {
             confirmAlertIfAvailable();
+        }
+    }
+
+    public String urlEncode(String str){
+        try{
+            URI uri = new URI("http", "www.home.com", "/test", str, null);
+            return uri.getRawQuery();
+        } catch(URISyntaxException e){
+            throw new Error(e);
         }
     }
 
