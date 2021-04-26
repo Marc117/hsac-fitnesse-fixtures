@@ -9,7 +9,7 @@ import io.github.sukgu.Shadow;
  * Test class to allow fixture code to be debugged.
  */
 @RunWith(HsacFitNesseRunner.class)
-@FitNesseRunner.Suite("HsacExamples.SlimTests.BrowserTests.ShadowDomHandling")
+@FitNesseRunner.Suite("HsacExamples.SlimTests.BrowserTests.UtilityFixtures")
 // Here we use an explicit FilesSectionCopy (without default) because we DO want to get galenExamples and httpPostExamples
 @HsacFitNesseRunner.FilesSectionCopy(addDefaultExcludes = false,
         exclude = {"testResults", "testProgress",
