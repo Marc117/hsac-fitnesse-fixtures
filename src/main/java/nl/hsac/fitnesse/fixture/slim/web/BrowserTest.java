@@ -1,5 +1,7 @@
 package nl.hsac.fitnesse.fixture.slim.web;
 
+import java.net.URISyntaxException;
+import java.net.URI;
 import fitnesse.slim.fixtureInteraction.FixtureInteraction;
 import nl.hsac.fitnesse.fixture.slim.HttpTest;
 import nl.hsac.fitnesse.fixture.slim.SlimFixture;
@@ -231,6 +233,15 @@ public class BrowserTest<T extends WebElement> extends SlimFixture {
         secondsBeforeTimeout(secondsBeforeTimeout);
         if (!ensureActiveTabIsNotClosed() && confirmAlertIfAvailable) {
             confirmAlertIfAvailable();
+        }
+    }
+
+    public String urlEncode(String str){
+        try{
+            URI uri = new URI("http", "www.home.com", "/test", str, null);
+            return uri.getRawQuery();
+        } catch(URISyntaxException e){
+            throw new Error(e);
         }
     }
 
