@@ -5,12 +5,6 @@ Test
 
 !1 Website testing using !-BrowserTest-!
 
-|script                                 |browser test                                                          |
-|analyzeLogTest|
-|note|open                                   |https://www.edureka.co/                                    |
-|note|click| About|
-|note|analyzeLog|
-
-
-When multiple similar sequences of steps are needed a script can be generalized using a scenario, which is show in ScenarioTest.
-To make test more readable, maintainable and powerful we can also create custom subclasses of !-BrowserTest-!. This is shown in CustomFixtureTest.
+|script | browser test|
+|open| https://google.com|
+|analyzeLog|

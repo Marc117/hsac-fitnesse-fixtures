@@ -20,7 +20,6 @@ import nl.hsac.fitnesse.fixture.util.selenium.by.GridBy;
 import nl.hsac.fitnesse.fixture.util.selenium.by.ListItemBy;
 import nl.hsac.fitnesse.fixture.util.selenium.by.OptionBy;
 import nl.hsac.fitnesse.fixture.util.selenium.by.XPathBy;
-import nl.hsac.fitnesse.fixture.util.selenium.driverfactory.ProjectDriverFactoryFactory;
 import nl.hsac.fitnesse.slim.interaction.ExceptionHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -36,14 +35,8 @@ import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.logging.LogType;
-import org.openqa.selenium.logging.LoggingPreferences;
-import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -52,12 +45,10 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 public class BrowserTest<T extends WebElement> extends SlimFixture {
@@ -98,43 +89,11 @@ public class BrowserTest<T extends WebElement> extends SlimFixture {
     }
 
     public void analyzeLog(){
-//        DesiredCapabilities caps = DesiredCapabilities.chrome();
-//        LoggingPreferences logPrefs = new LoggingPreferences();
-//        logPrefs.enable(LogType.BROWSER, Level.ALL);
-//        caps.setCapability(CapabilityType.LOGGING_PREFS, logPrefs);
-
         List<LogEntry> entries = driver().manage().logs().get(LogType.PERFORMANCE).getAll();
+        System.out.println(entries.size() + " " + LogType.PERFORMANCE + " log entries found");
         for (LogEntry entry : entries) {
             System.out.println(entry.getMessage());
         }
-    }
-
-    public void analyzeLogTest(){
-        System.setProperty("webdriver.chrome.driver","C:\\Users\\mfolk\\IdeaProjects\\hsac-fitnesse-fixtures\\wiki\\webdrivers\\chromedriver-windows-32bit.exe");
-
-        DesiredCapabilities caps = DesiredCapabilities.chrome();
-
-        LoggingPreferences logPrefs = new LoggingPreferences();
-        logPrefs.enable(LogType.PERFORMANCE, Level.INFO);
-
-        caps.setCapability(CapabilityType.LOGGING_PREFS, logPrefs);
-
-        WebDriver driver = new ChromeDriver(caps);
-
-        driver.get("https://www.edureka.co/");
-
-        List<LogEntry> entries = driver.manage().logs().get(LogType.PERFORMANCE).getAll();
-
-        System.out.println(entries.size() + " " + LogType.PERFORMANCE + " log entries found");
-
-        for (LogEntry entry : entries) {
-            System.out.println(new Date(entry.getTimestamp()) + " " + entry.getLevel() + " " + entry.getMessage());
-
-        }
-
-        driver.close();
-        driver.quit();
-
     }
 
     @Override

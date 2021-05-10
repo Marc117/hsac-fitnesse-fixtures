@@ -10,9 +10,12 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.ie.InternetExplorerOptions;
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.Map;
+import java.util.logging.Level;
 
 /**
  * Creates a webdriver at the local machine.
@@ -46,7 +49,13 @@ public class LocalDriverFactory implements DriverFactory {
             } else if ("chromedriver".equalsIgnoreCase(driverClass.getSimpleName())) {
                 DesiredCapabilities capabilities = getChromeMobileCapabilities(profile);
                 DriverFactory.addDefaultCapabilities(capabilities);
-                driver = new ChromeDriver(capabilities);
+                // how to integrate better into fitness
+                ChromeOptions options = new ChromeOptions();
+                LoggingPreferences logPrefs = new LoggingPreferences();
+                logPrefs.enable(LogType.PERFORMANCE, Level.ALL);
+                options.setCapability("goog:loggingPrefs",logPrefs);
+
+                driver = new ChromeDriver(options);
             } else if ("internetexplorerdriver".equalsIgnoreCase(driverClass.getSimpleName())) {
                 InternetExplorerOptions ieOptions = getInternetExplorerOptions(profile);
                 driver = new InternetExplorerDriver(ieOptions);
