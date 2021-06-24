@@ -210,7 +210,7 @@ public class SeleniumDriverSetup extends SlimFixture {
 
     public void printLog(){
         List<LogEntry> entries = getEnvironment().getSeleniumHelper().driver().manage().logs().get(LogType.PERFORMANCE).getAll();
-        System.out.println(entries.size() + " " + LogType.PERFORMANCE + " log entries found");
+        System.out.println(entries.size() + " log entries found");
         for (LogEntry entry : entries) {
             System.out.println(entry.getMessage());
         }
