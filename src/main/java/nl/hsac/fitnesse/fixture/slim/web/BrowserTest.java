@@ -84,6 +84,7 @@ public class BrowserTest<T extends WebElement> extends SlimFixture {
     private int shadowTryCounter = 0;
     private int shadowTryXAmountOfTimes = 10;
 
+
     protected List<String> getCurrentSearchContextPath() {
         return currentSearchContextPath;
     }
@@ -2766,7 +2767,7 @@ public class BrowserTest<T extends WebElement> extends SlimFixture {
     protected T getElementWithShadow(String cssSelector){
         try{
             return (T) shadow.findElement(cssSelector);
-        } catch (ElementNotVisibleException e){
+        } catch (Exception e){
             return null;
         }
     }
