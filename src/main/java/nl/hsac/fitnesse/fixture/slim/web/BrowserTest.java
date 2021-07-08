@@ -40,6 +40,7 @@ import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import io.github.sukgu.Shadow;
 
 import java.io.File;
 import java.io.IOException;
@@ -76,6 +77,12 @@ public class BrowserTest<T extends WebElement> extends SlimFixture {
             EDGE_HIDDEN_BY_OTHER_ELEMENT_ERROR = "Element is obscured";
     private static final Pattern FIREFOX_HIDDEN_BY_OTHER_ELEMENT_ERROR_PATTERN =
             Pattern.compile("Element.+is not clickable.+because another element.+obscures it");
+    private Shadow shadow = new Shadow(driver());
+    private boolean shadowDomHandling = true;
+    private int shadowPollingTimeSeconds = 1;
+    private int shadowTryCounter = 0;
+    private int shadowTryXAmountOfTimes = 10;
+
 
     protected List<String> getCurrentSearchContextPath() {
         return currentSearchContextPath;
@@ -86,14 +93,6 @@ public class BrowserTest<T extends WebElement> extends SlimFixture {
     protected void beforeInvoke(Method method, Object[] arguments) {
         super.beforeInvoke(method, arguments);
         waitForAngularIfNeeded(method);
-    }
-
-    public void analyzeLog(){
-        List<LogEntry> entries = driver().manage().logs().get(LogType.PERFORMANCE).getAll();
-        System.out.println(entries.size() + " " + LogType.PERFORMANCE + " log entries found");
-        for (LogEntry entry : entries) {
-            System.out.println(entry.getMessage());
-        }
     }
 
     @Override
@@ -997,6 +996,7 @@ public class BrowserTest<T extends WebElement> extends SlimFixture {
     }
 
     protected T getElementToClick(String place) {
+        if (isShadowUsageAllowed(getSeleniumHelper().getElementToClick(place))) return getElementWithShadow(place);
         return getSeleniumHelper().getElementToClick(place);
     }
 
@@ -1074,6 +1074,8 @@ public class BrowserTest<T extends WebElement> extends SlimFixture {
     }
 
     protected T getContainerElement(String container) {
+        if (isShadowUsageAllowed(findByTechnicalSelectorOr(container, this::getContainerImpl)))
+            return getElementWithShadow(container);
         return findByTechnicalSelectorOr(container, this::getContainerImpl);
     }
 
@@ -1603,6 +1605,7 @@ public class BrowserTest<T extends WebElement> extends SlimFixture {
     }
 
     protected T getElement(String place) {
+        if (isShadowUsageAllowed(getSeleniumHelper().getElement(place))) return getElementWithShadow(place);
         return getSeleniumHelper().getElement(place);
     }
 
@@ -1939,6 +1942,8 @@ public class BrowserTest<T extends WebElement> extends SlimFixture {
     }
 
     protected T getElementToCheckVisibility(String place) {
+        if (isShadowUsageAllowed(getSeleniumHelper().getElementToCheckVisibility(place)))
+            return getElementWithShadow(place);
         return getSeleniumHelper().getElementToCheckVisibility(place);
     }
 
@@ -2740,6 +2745,66 @@ public class BrowserTest<T extends WebElement> extends SlimFixture {
 
     public void setNgBrowserTest(NgBrowserTest ngBrowserTest) {
         this.ngBrowserTest = ngBrowserTest;
+    }
+
+    public boolean isShadowDomHandlingEnabled(){
+        return shadowDomHandling;
+    }
+
+    public void setShadowDomHandlingTo(boolean shadowDomHandling){
+        this.shadowDomHandling = shadowDomHandling;
+    }
+
+    protected T getElementWithShadow(String cssSelector){
+        try{
+            return (T) shadow.findElement(cssSelector);
+        } catch (Exception e){
+            return null;
+        }
+    }
+
+    protected boolean isShadowUsageAllowed(T elementOrContainer) {
+        if (elementOrContainer == null && isShadowDomHandlingEnabled() && shadowTriedEnoughTimes()) {
+            resetShadowTryCounter();
+            return true;
+        } else if (elementOrContainer == null) {
+            shadowIncreaseTryCounter();
+        } else {
+            resetShadowTryCounter();
+        }
+        return false;
+    }
+
+    public void setImplicitWaitForShadowTo(int shadowImplicitWaitSeconds){
+        shadow.setImplicitWait(shadowImplicitWaitSeconds);
+    }
+
+    public void setExplicitWaitForShadowTo(int shadowExplicitWaitSeconds){
+        try{
+            shadow.setExplicitWait(shadowExplicitWaitSeconds,shadowPollingTimeSeconds);
+        } catch(Exception e){
+            System.err.println(e);
+        }
+    }
+
+    public void setPollingTimeForShadowTo(int shadowPollingTimeSeconds){
+        this.shadowPollingTimeSeconds = shadowPollingTimeSeconds;
+    }
+
+    public void shadowTryAmountOfTimes(int amountOfTimes) {
+        this.shadowTryXAmountOfTimes = amountOfTimes;
+    }
+
+    private int shadowIncreaseTryCounter() {
+        return this.shadowTryCounter++;
+    }
+
+    private void resetShadowTryCounter() {
+        this.shadowTryCounter = 0;
+    }
+
+    private boolean shadowTriedEnoughTimes() {
+        return shadowTryCounter == shadowTryXAmountOfTimes;
     }
 
     public boolean isImplicitWaitForAngularEnabled() {
