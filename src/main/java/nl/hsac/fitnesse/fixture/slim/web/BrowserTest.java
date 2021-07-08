@@ -35,6 +35,8 @@ import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.logging.LogEntry;
+import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -92,7 +94,6 @@ public class BrowserTest<T extends WebElement> extends SlimFixture {
         super.beforeInvoke(method, arguments);
         waitForAngularIfNeeded(method);
     }
-
 
     @Override
     protected Object invoke(FixtureInteraction interaction, Method method, Object[] arguments)
