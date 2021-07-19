@@ -61,8 +61,8 @@ This configuration can be overridden by using system properties. This allows dif
 *!
 
 |script          |selenium driver setup                                                                                                                  |
-|note            |start driver for     |chrome                 |with profile          |$chromeLogging                          |                         |
-|start driver for|firefox                                                                                                                                |
+|start driver for|chrome               |with profile           |$chromeLogging        |                                                                  |
+|note            |start driver for     |firefox                                                                                                          |
 |note            |start driver for     |!-MicrosoftEdge-!                                                                                                |
 |note            |start driver for     |internet explorer                                                                                                |
 |note            |start driver for     |firefox                                                                                                          |

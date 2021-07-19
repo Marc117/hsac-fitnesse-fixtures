@@ -142,6 +142,8 @@ public class LocalDriverFactory implements DriverFactory {
             chromeOptions.setCapability(ChromeOptions.CAPABILITY,profile);
             if(profile.containsKey("logtype")){
                 LoggingPreferences logPrefs = new LoggingPreferences();
+                chromeOptions.addArguments("start-maximized");
+                chromeOptions.addArguments("--auto-open-devtools-for-tabs");
                 logPrefs.enable(profile.get("logtype").toString(),Level.ALL);
                 chromeOptions.setCapability("goog:loggingPrefs",logPrefs);
             }
